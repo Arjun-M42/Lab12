@@ -11,14 +11,7 @@ with st.sidebar:
     st.info("Weather Tool: Enabled")
     st.info("Finance Tools: Enabled")
 
-    st.divider()
-    st.caption("Screenshots required:")
-    st.markdown("""
-    • App UI  
-    • Trip output  
-    • Finance output  
-    • MCP /docs  
-    """)
+
 
 # ---------------- Main UI ----------------
 st.title("GenAI Lab Assignment – MCP Based Agents")

@@ -1,30 +1,40 @@
+import os
 import requests
 
-MCP_SERVER = "http://localhost:3333"
+MCP = os.getenv("MCP_SERVER_URL", "http://127.0.0.1:3333")
 
 def plan_trip(city, days, month, interests):
-    # Call MCP tool
-    weather = requests.get(
-        f"{MCP_SERVER}/tools/weather",
-        params={"city": city}
-    ).json()
+    weather = None
+
+    try:
+        r = requests.get(
+            f"{MCP}/tools/weather",
+            params={"city": city},
+            timeout=5
+        )
+        if r.status_code == 200:
+            weather = r.json()
+    except Exception:
+        weather = None
+
+    if weather is None:
+        weather = {
+            "temp": "N/A",
+            "condition": "Unavailable (MCP not reachable)"
+        }
 
     return f"""
 ### 📍 Cultural & Historical Significance
-Tokyo blends ancient traditions like temples and shrines with modern innovation, making it one of the most culturally rich cities in the world.
+{city} is a globally significant city known for its rich cultural heritage and modern development.
 
 ### 🌤 Weather
-- Temperature: {weather['temp']} °C
+- Temperature: {weather['temp']}
 - Condition: {weather['condition']}
 
 ### 🗓 {days}-Day Trip Plan ({month})
-**Day 1:** Temples, historic districts  
-**Day 2:** Culture, food, shopping  
-**Day 3:** Modern Tokyo & landmarks  
+Day 1: Historic landmarks  
+Day 2: Culture, food & markets  
+Day 3: Modern attractions  
 
-### ✈ Flights (Placeholder)
-Bangalore → Tokyo | ₹55,000 (approx)
-
-### 🏨 Hotels (Placeholder)
-Mid-range hotel near Shinjuku
+✈ Flights and 🏨 hotels are placeholders.
 """
